@@ -18,20 +18,15 @@ python manage.py migrate
 
 All commands should be run from `currency` directory
 
-.
-└── currency
 
-    ├── currency <-`here`
-    
-    └── scraper
-    
-        ├── management
-        
-        │   └── commands
-        
-        ├── migrations
-        
-        └── rest
+    .
+    └── currency
+        ├── currency <-`here`
+        └── scraper
+            ├── management
+            │   └── commands
+            ├── migrations        
+            └── rest
         
 
 
