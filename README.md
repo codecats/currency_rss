@@ -20,12 +20,19 @@ All commands should be run from `currency` directory
 
 .
 └── currency
+
     ├── currency <-`here`
+    
     └── scraper
+    
         ├── management
+        
         │   └── commands
+        
         ├── migrations
+        
         └── rest
+        
 
 
 ##server
