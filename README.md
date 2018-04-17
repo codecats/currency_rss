@@ -42,7 +42,7 @@ now open browser and hit `http://localhost:8000/scraper/api/`, you should see em
 celery -A currency worker -l info
 
 
-## run scraper
+## run scraper (CRON once a day)
 
 python manage.py scrap
 
@@ -54,3 +54,12 @@ now you can open api and you should see some results
 insted of steps with celery just run
 
 celery -A currency worker -l info -B
+
+
+## TODO:
+
+ - complete celery beat configuration
+ - add entries to scraper.const.py#CUR_PATTERNS
+ - unittests
+ - config for CI server
+ - heroku demo app
