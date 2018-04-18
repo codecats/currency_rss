@@ -36,29 +36,12 @@ python manage.py runserver
 
 now open browser and hit `http://localhost:8000/scraper/api/`, you should see empty results
 
-
-## celery (infinity running process)
-
-celery -A currency worker -l info
-
-
-## run scraper (CRON once a day)
-
-python manage.py scrap
-
-now you can open api and you should see some results
-
-
-## NOT WORKING YET, periodic tasks
-
-insted of steps with celery just run
+## run scraper
 
 celery -A currency worker -l info -B
 
 
 ## TODO:
-
- - complete celery beat configuration
  - add entries to scraper.const.py#CUR_PATTERNS
  - unittests
  - config for CI server

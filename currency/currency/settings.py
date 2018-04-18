@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+from __future__ import absolute_import
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from celery.schedules import crontab
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -122,3 +124,12 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# CELERY_BEAT_SCHEDULE = {
+#     'scrap_usd': {
+#         'task': 'scraper.tasks.scrap',
+#         'schedule': 5., #crontab(minute=00, hour=3),
+#         'args': ['usd'],
+#     }
+# }

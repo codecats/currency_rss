@@ -1,20 +1,22 @@
+from celery.schedules import crontab
+
 from currency.celery import app
+from scraper.const import CUR_PATTERNS
 from scraper.controller import Parser
+from scraper.models import ScrapedCurrency
 
 
 @app.task
 def scrap(lang):
-    print 'TASK', lang
     pars = Parser(lang)
     pars.parse_entry()
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(10.0, scrap.s(2,2), name='add every 10')
-
-    # Executes every Monday morning at 7:30 a.m.
-    # sender.add_periodic_task(
-    #     crontab(hour=7, minute=30, day_of_week=1),
-    #     test.s('Happy Mondays!'),
-    # )
+app.conf.beat_schedule = {
+    'scrap_{}'.format(cur): {
+        'task': 'scraper.tasks.scrap',
+        'schedule': crontab(minute=i%24, hour=8),
+        'args': [cur],
+    }
+    for i, cur in enumerate(CUR_PATTERNS)
+}
