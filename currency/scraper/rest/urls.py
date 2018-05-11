@@ -1,12 +1,12 @@
 from django.conf.urls import url, include
 from rest_framework import routers
-import views
+
+from scraper.rest.views import ScrapedCurrencyViewSet
 
 router = routers.DefaultRouter()
 
-router.register(r'api', views.ScrapedCurrencyViewSet, 'api')
+router.register(r'api', ScrapedCurrencyViewSet, 'api')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^hel', views.hello),
 ]

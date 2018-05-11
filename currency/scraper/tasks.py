@@ -1,10 +1,9 @@
 from currency.celery import app
-from scraper.controller import Parser
+from scraper.parser import Parser
 
 
 @app.task
 def scrap(lang):
-    print 'TASK', lang
     pars = Parser(lang)
     pars.parse_entry()
 
