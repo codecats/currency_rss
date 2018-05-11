@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'django_celery_results', #not for now
+    'django_celery_results',
     'django_celery_beat',
     'scraper',
 ]
@@ -122,3 +122,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+try:
+    from currency.settings_local import *
+except ImportError:
+    pass

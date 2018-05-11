@@ -64,8 +64,22 @@ python manage.py runserver
 now open browser and hit `http://localhost:8000/scraper/api/`, you should see empty results
 
 
+## Scraper
+Scraper is a simple task that fetch currency. You can run it manually by simple `manage.py` command
+```bash
+python manage.py scrap
+```
 
+### When you want add this script to run in periodic tasks you can use CRON or Celery
+#### celery
+I don't recomment install celery just for this scrapper porpouse but if you already use celery (for example you already have infrastructure on you system and your backend has free working power).
 
+Run celery worker called `currency` with level info. Last argument is `beat` that runs  periodic task scheduler.
+```bash
+celery -A currency worker -l info -B
+``` 
+#### CRON
+Simpler and better (less heavy) solution is just add script to crontab
 ## celery (infinity running process)
 
 celery -A currency worker -l info
@@ -86,8 +100,7 @@ celery -A currency worker -l info -B
 
 
 ## TODO:
-
- - complete celery beat configuration
+ - cron explanation
  - add entries to scraper.const.py#CUR_PATTERNS
  - unittests
  - config for CI server

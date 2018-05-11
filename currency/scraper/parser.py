@@ -14,12 +14,16 @@ class Parser(object):
     _CURRENCY_PATTERN = re.compile('\d+\.\d+')
 
     def __init__(self, country: str = 'usd'):
-        self.link = self.link.format(country)  # https://www.ecb.europa.eu/rss/fxref-usd.html
+        self.link = self.link.format(country)  # https://www.ecb.euroselfpa.eu/rss/fxref-usd.html
         self.country = country
 
     @cached_property
     def data(self):
         return feedparser.parse(self.link)
+
+    @classmethod
+    def get_decimal(cls, text: str):
+        return float(re.findall(cls._CURRENCY_PATTERN, text)[0])
 
     def parse_entry(self):
         scraped = []
@@ -28,7 +32,7 @@ class Parser(object):
         for en in d.entries:
             valid = True
             try:
-                value = float(re.findall(self._CURRENCY_PATTERN, en.cb_exchangerate)[0])
+                value = self.get_decimal(en.cb_exchangerate)
             except (TypeError, ValueError):
                 valid = False
             valid = valid and en.cb_targetcurrency.lower() != self.country
