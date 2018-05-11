@@ -71,36 +71,29 @@ python manage.py scrap
 ```
 
 ### When you want add this script to run in periodic tasks you can use CRON or Celery
-#### celery
+Please don't use both solution in the same time!
+#### CRON
+Simpler and better (less heavy) solution is just add script to crontab.
+You can simply add command `scrap` by simple entry in crontab:
+```cron
+# m h  dom mon dow   command
+*0 3 * * * /path/to/app/currency_rss/venv/bin/python /path/to/app/currency_rss/currency/manage.py scrap
+```
+To keep this solution more pythonic and easier to manage and develop I used `django-crontab` lib.
+```bash
+python manage.py crontab add
+```
+_* now if you have some changes in your code just re-run `crontab add` command_
+
+#### Celery
 I don't recomment install celery just for this scrapper porpouse but if you already use celery (for example you already have infrastructure on you system and your backend has free working power).
 
 Run celery worker called `currency` with level info. Last argument is `beat` that runs  periodic task scheduler.
 ```bash
 celery -A currency worker -l info -B
 ``` 
-#### CRON
-Simpler and better (less heavy) solution is just add script to crontab
-## celery (infinity running process)
-
-celery -A currency worker -l info
-
-
-## run scraper (CRON once a day)
-
-python manage.py scrap
-
-now you can open api and you should see some results
-
-
-## NOT WORKING YET, periodic tasks
-
-insted of steps with celery just run
-
-celery -A currency worker -l info -B
-
 
 ## TODO:
- - cron explanation
  - add entries to scraper.const.py#CUR_PATTERNS
  - unittests
  - config for CI server

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_results',
     'django_celery_beat',
+    'django_crontab',
     'scraper',
 ]
 
@@ -117,6 +118,10 @@ USE_L10N = True
 
 USE_TZ = False
 
+
+CRONJOBS = [
+    ('0 3 * * *', 'scraper.tasks_cron.scrap') #very day at 3 am
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
