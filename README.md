@@ -79,7 +79,7 @@ You can simply add command `scrap` by simple entry in crontab:
 # m h  dom mon dow   command
 *0 3 * * * /path/to/app/currency_rss/venv/bin/python /path/to/app/currency_rss/currency/manage.py scrap
 ```
-To keep this solution more pythonic and easier to manage and develop I used `django-crontab` lib.
+To keep this solution more pythonic and easier to manage and develop I used [django-crontab](https://github.com/kraiz/django-crontab) lib.
 ```bash
 python manage.py crontab add
 ```
