@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+services: postgresql
+
+env:
+  - DJANGO=2.0.3 DJANGO_SETTINGS_MODULE="currency.settings_travis"
+install:
+  - pip install -r requirements.txt
+before_script:
+  - psql -c 'create database currency;' -U postgres
+  - python manage.py migrate
+script:
+  - python manage.py test

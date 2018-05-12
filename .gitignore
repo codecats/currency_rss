@@ -4,5 +4,6 @@ venv/*
 db.sqlite3
 celerybeat-schedule
 settings_local.py
+settings_travis.py
 htmlcov/*
-.coverege
+.coverage

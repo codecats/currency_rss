@@ -1,3 +1,8 @@
+# Currency scrapper rss
+scraps currencies from ecb.europa.eu/rss and presents results in REST service
+ 
+last build status: [![Build Status](https://travis-ci.org/codecats/currency_rss.svg?branch=master)](https://travis-ci.org/codecats/currency_rss)
+
 # Installation
 I assume that you have installed python, python-dev, virtualenv and other libs for python 3.
 Installation was tested for Ubuntu 16.10.
