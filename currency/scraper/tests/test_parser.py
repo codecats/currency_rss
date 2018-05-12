@@ -1,6 +1,7 @@
 from datetime import datetime
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
+import feedparser
 from django.test import TestCase
 from django.utils.timezone import now
 
@@ -9,7 +10,9 @@ from scraper.parser import Parser
 
 
 class HardcodedDataParser(Parser):
-    data = MagicMock(entries=[])
+    def __init__(self, country: str = 'usd'):
+        super().__init__(country)
+        self.data = MagicMock(entries=[])
 
 
 class ParserTest(TestCase):
@@ -21,14 +24,31 @@ class ParserTest(TestCase):
         self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
 
         parser.data.entries.append(MagicMock())
+        parser.parse_entry()
+        self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
+
+        parser.data.entries.append(MagicMock(cb_targetcurrency=None))
+        parser.parse_entry()
         self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
 
         parser.data.entries.append(MagicMock(cb_exchangerate='123.8 EUR', updated_parsed='invalid'))
+        parser.parse_entry()
         self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
 
         parser.data.entries.append(
             MagicMock(cb_exchangerate='123.8 EUR', updated_parsed=now(), cb_targetcurrency='EUR'))
+        parser.parse_entry()
         self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
+
+    def test_old_data(self):
+        ScrapedCurrency.objects.create(country='usd', value=1.8, updated=now())
+        self.assertEqual(ScrapedCurrency.objects.all().count(), 1)
+        parser = HardcodedDataParser('usd')
+        parser.data.entries.append(MagicMock(
+            cb_exchangerate='12.00 EUR', updated_parsed=(1980, 2, 17, 17, 3, 38, 1, 48, 0), cb_targetcurrency='usd'))
+        parser.parse_entry()
+        self.assertEqual(ScrapedCurrency.objects.all().count(), 1)
+        ScrapedCurrency.objects.all().delete()
 
     def test_valid_data(self):
         self.assertEqual(ScrapedCurrency.objects.all().count(), 0)
@@ -72,3 +92,9 @@ class ParserTest(TestCase):
         with self.assertRaises((TypeError, ValueError, IndexError)):
             p.parse_date((1, 2))
         self.assertIsInstance(p.parse_date((2009, 2, 17, 17, 3, 38, 1, 48, 0)), datetime)
+
+    @patch.object(feedparser, 'parse')
+    def test_parser_usage(self, mock):
+        p = Parser('usd')
+        p.data
+        self.assertTrue(mock.called)

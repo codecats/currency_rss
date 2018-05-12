@@ -18,7 +18,7 @@ Project structure should look similar like that:
 
     .
     └── currency # Content root
-        ├── currency # All commands should be run from this dir
+        ├── currency # All manage.py commands should be run from this 'app' dir
         └── scraper
             ├── management
             │   └── commands
@@ -42,7 +42,7 @@ Let's activate this environment, after this command python from virtualenv creat
 ```
 
 ## Step 4 Install requirements
-Install required libs stored in the `requirements.txt` file:
+Install required libs stored in the `requirements.txt` file (Content root directory):
 ```bash
 pip install -r requirements.txt
 ```
@@ -57,7 +57,7 @@ Done.
 
 
 ## Server
-As I mentioned before this command should be run from `currency` directory.
+As I mentioned before this command should be run from `currency` app directory.
 ```bash
 python manage.py runserver
 ```
@@ -73,7 +73,7 @@ python manage.py scrap
 ### When you want add this script to run in periodic tasks you can use CRON or Celery
 Please don't use both solution in the same time!
 #### CRON
-Simpler and better (less heavy) solution is just add script to crontab.
+Simpler and better (less heavy) solution, just add script to crontab.
 You can simply add command `scrap` by simple entry in crontab:
 ```cron
 # m h  dom mon dow   command
@@ -86,12 +86,13 @@ python manage.py crontab add
 _* now if you have some changes in your code just re-run `crontab add` command_
 
 #### Celery
-I don't recomment install celery just for this scrapper porpouse but if you already use celery (for example you already have infrastructure on you system and your backend has free working power).
+I don't recomment install celery just for this scrapper porpouse but if you already use celery. For example you already have infrastructure on you system and your backend has free working power.
 
 Run celery worker called `currency` with level info. Last argument is `beat` that runs  periodic task scheduler.
 ```bash
 celery -A currency worker -l info -B
 ``` 
+_You can run it directly from bash but I highly remommend supervisor for better manage_
 
 ## TODO:
  - add entries to scraper.const.py#CUR_PATTERNS

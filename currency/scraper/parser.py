@@ -9,21 +9,29 @@ from scraper.models import ScrapedCurrency
 
 
 class Parser(object):
-    link = 'https://www.ecb.europa.eu/rss/fxref-{}.html'
+    _link = 'https://www.ecb.europa.eu/rss/fxref-{}.html'
     country = None
     _CURRENCY_PATTERN = re.compile('\d+\.\d+')
 
     def __init__(self, country: str = 'usd'):
-        self.link = self.link.format(country)  # https://www.ecb.euroselfpa.eu/rss/fxref-usd.html
+        self._link = self._link.format(country)  # https://www.ecb.euroselfpa.eu/rss/fxref-usd.html
         self.country = country
 
     @cached_property
     def data(self):
-        return feedparser.parse(self.link)
+        return feedparser.parse(self._link)
 
     @classmethod
-    def get_decimal(cls, text: str):
+    def parse_decimal(cls, text: str):
         return float(re.findall(cls._CURRENCY_PATTERN, text)[0])
+
+    @classmethod
+    def parse_date(cls, p_tuple):
+        return datetime.fromtimestamp(mktime(p_tuple))
+
+    @classmethod
+    def parse_currency(cls, cur: str):
+        return cur.strip().lower()
 
     def parse_entry(self):
         scraped = []
@@ -32,15 +40,22 @@ class Parser(object):
         for en in d.entries:
             valid = True
             try:
-                value = self.get_decimal(en.cb_exchangerate)
-            except (TypeError, ValueError):
+                value = self.parse_decimal(en.cb_exchangerate)
+            except (TypeError, ValueError, IndexError):
                 valid = False
-            valid = valid and en.cb_targetcurrency.lower() != self.country
+            try:
+                updated = self.parse_date(en.updated_parsed)
+            except TypeError:
+                valid = False
+            try:
+                cur = self.parse_currency(en.cb_targetcurrency)
+            except AttributeError:
+                valid = False
+            else:
+                valid = valid and cur == self.country
 
-            # invalid entry, skip this one
-            if valid == False:
-                updated = datetime.fromtimestamp(mktime(en.updated_parsed))
-
+            # valid entry
+            if valid == True:
                 # already scraped data
                 if last_scraped is not None and last_scraped.updated >= updated:
                     return

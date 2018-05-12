@@ -6,6 +6,6 @@ from django.db.models import Model, DateTimeField, FloatField, CharField
 
 class ScrapedCurrency(Model):
     created = DateTimeField(auto_now=True)
-    updated = DateTimeField()
+    updated = DateTimeField(null=True, blank=True)
     value = FloatField()
     country = CharField(max_length=3)
